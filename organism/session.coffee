@@ -16,13 +16,14 @@ class Atoms.Organism.AppnimaSession extends Atoms.Organism.Section
 
   @default  :
     style   : "padding",
+    events  : ["login", "signup", "error"]
     children: [
       "Atom.Image": {}
     ,
       "Molecule.Form": id: "form", events: ["change"], children: [
         "Atom.Input": type:"email", name: "mail", placeholder: "Email...", events: ["keyup"], required: true
       ,
-        "Atom.Input": type:"password", name: "password", placeholder: "Password...", events: ["keyup"], required: true
+        "Atom.Input": id: "password", type:"password", name: "password", placeholder: "Password...", events: ["keyup"], required: true
       ,
         "Atom.Button": text: "Login", action: "login", style: "fluid theme", callbacks: ["onSubmit"]
       ,
@@ -34,10 +35,10 @@ class Atoms.Organism.AppnimaSession extends Atoms.Organism.Section
 
   render: ->
     super
-    if window.Appnima?.key?
+    if window.Appnima?
       do @onFormChange
     else
-      alert "ERROR: Unknown Appnima key"
+      alert "ERROR: App/nima library not exists."
 
   onFormChange: =>
     form = @form.value()
@@ -47,13 +48,16 @@ class Atoms.Organism.AppnimaSession extends Atoms.Organism.Section
     false
 
   onSubmit: (event, button) ->
-    action = button.attributes.action
-    values = @form.value()
+    if window.Appnima?.key?
+      action = button.attributes.action
+      values = @form.value()
 
-    Atoms.App.Modal.Loading.show()
-    Appnima.User[action](values.mail, values.password).then (error, appnima) =>
-      if error
-        @bubble "error", error
-      else
-        @bubble action, appnima.response
-      Atoms.App.Modal.Loading.hide()
+      Atoms.App.Modal.Loading.show()
+      window.Appnima.User[action](values.mail, values.password).then (error, appnima) =>
+        if error
+          @bubble "error", error
+        else
+          @bubble action, appnima.response
+        Atoms.App.Modal.Loading.hide()
+    else
+      alert "ERROR: Unknown App/nima key"
