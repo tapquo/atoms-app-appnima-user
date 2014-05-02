@@ -1,8 +1,8 @@
 ###
 @TODO
 
-@namespace Atoms.Molecule
-@class GMapFullScreen
+@namespace Atoms.Organism
+@class AppnimaSession
 
 @author Javier Jimenez Villar <javi@tapquo.com> || @soyjavi
 ###
@@ -16,7 +16,6 @@ class Atoms.Organism.AppnimaSession extends Atoms.Organism.Section
 
   @default  :
     style   : "padding",
-    events  : ["login", "signup", "error"]
     children: [
       "Atom.Image": {}
     ,
