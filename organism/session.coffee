@@ -20,7 +20,7 @@ class Atoms.Organism.AppnimaSession extends Atoms.Organism.Section
       "Atom.Image": {}
     ,
       "Molecule.Form": id: "form", events: ["change"], children: [
-        "Atom.Input": type:"email", name: "mail", placeholder: "Email...", events: ["keyup"], required: true
+        "Atom.Input": id: "mail", type:"email", name: "mail", placeholder: "Email...", events: ["keyup"], required: true
       ,
         "Atom.Input": id: "password", type:"password", name: "password", placeholder: "Password...", events: ["keyup"], required: true
       ,
@@ -51,12 +51,12 @@ class Atoms.Organism.AppnimaSession extends Atoms.Organism.Section
       action = button.attributes.action
       values = @form.value()
 
-      Atoms.App.Modal.Loading.show()
+      __.Modal.Loading.show()
       window.Appnima.User[action](values.mail, values.password).then (error, appnima) =>
         if error
           @bubble "error", error
         else
-          @bubble action, appnima.response
-        Atoms.App.Modal.Loading.hide()
+          @bubble action, appnima
+        __.Modal.Loading.hide()
     else
       alert "ERROR: Unknown App/nima key"
