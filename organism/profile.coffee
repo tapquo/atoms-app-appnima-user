@@ -8,67 +8,76 @@
 ###
 "use strict"
 
-###
-mail
-password
-username
-name
-bio
-avatar
-phone
-site
-country
-language
-###
 class Atoms.Organism.AppnimaProfile extends Atoms.Organism.Section
 
   @extends  : true
 
-  @events   : ["error", "submit"]
+  @events   : ["error", "change", "logout"]
 
   @default  :
-    style   : "padding",
     children: [
-      "Molecule.Form": id: "form", events: ["change", "error", "submit"], children: [
-        "Atom.Input": id: "mail", type:"email", name: "mail", placeholder: "Email...", events: ["keyup"], required: true
-      # ,
-      #   "Atom.Input": id: "password", type:"password", name: "password", placeholder: "Password...", required: true
-      ,
+      "Atom.Figure": id: "avatar", style: "big", events: ["touch"]
+    ,
+      "Atom.Heading": id: "mail"
+    ,
+      "Molecule.Form": id: "form", style: "margin-all", events: ["change", "error", "submit"], children: [
         "Atom.Input": id: "username", type:"text", name: "username", placeholder: "Username..."
       ,
-        "Atom.Input": id: "name", type:"text", name: "name", placeholder: "Name..."
+        "Atom.Label": text: "Other Information"
       ,
-        "Atom.Textarea": id: "bio", type:"text", name: "bio", placeholder: "Bio..."
+        "Atom.Input": id: "name", type: "text", name: "name", placeholder: "Name..."
       ,
-        "Atom.Input": id: "avatar", type:"text", name: "avatar", placeholder: "Avatar..."
+        "Atom.Input": id: "phone", type: "tel", name: "phone", placeholder: "Phone..."
       ,
-        "Atom.Input": id: "phone", type:"tel", name: "phone", placeholder: "Phone..."
+        "Atom.Input": id: "site", type: "text", name: "site", placeholder: "Site..."
       ,
-        "Atom.Input": id: "site", type:"text", name: "site", placeholder: "Site..."
+        "Atom.Button": text: "Update profile", style: "margin-top fluid accept"
       ,
-        "Atom.Input": id: "country", type:"text", name: "country", placeholder: "Country..."
+        "Atom.Button": text: "Logout", style: "fluid", callbacks: ["onLogout"]
       ,
-        "Atom.Input": id: "language", type:"text", name: "language", placeholder: "Language..."
-      ,
-        "Atom.Button": text: "Update", action: "login", style: "fluid theme"
+        "Atom.Input": id: "file", type: "file", events: ["change"], callbacks: ["onAvatarChange"]
       ]
     ]
 
+  file  : undefined
+
   render: ->
     super
-    if window.Appnima?
-      do @onFormChange
-    else
+    unless window.Appnima?
       alert "ERROR: App/nima library not exists."
 
   show: ->
     super
     session = Appnima.User.session()
-    @form[field]?.value value for field, value of session when value
+    if session
+      @avatar.refresh url: session.avatar
+      @mail.refresh text: session.mail
+      @form[field]?.value value for field, value of session when value
+      do @onFormChange
+
+  # Children Bubble events
+  onFigureTouch: ->
+    @form.file.el.trigger "click"
+    false
+
+  onAvatarChange: ->
+    event.stopPropagation()
+    event.preventDefault()
+    file_url = event.target.files[0]
+    if file_url?.type?.match /image.*/
+      reader = new FileReader()
+      reader.onerror = (event) ->
+        alert "Error code: #{event.target.error}"
+      reader.onload = (event) =>
+        @file = event.target.result
+        @avatar.refresh url: @file
+        do @onFormSubmit
+      reader.readAsDataURL file_url
+    false
 
   onFormChange: =>
     form = @form.value()
-    method = if (form.mail is "" or form.password is "") then "attr" else "removeAttr"
+    method = if (form.mail is "") then "attr" else "removeAttr"
     for child in @form.children when not child.value
       child.el[method] "disabled", true
     false
@@ -78,13 +87,17 @@ class Atoms.Organism.AppnimaProfile extends Atoms.Organism.Section
     false
 
   onFormSubmit: (event, form) ->
-    console.info form.value()
     if window.Appnima?.key?
+      parameters = form?.value() or {}
+      parameters.avatar = @file if @file?
       __.Modal.Loading.show()
-      window.Appnima.User.update(form.value()).then (error, appnima) =>
+      window.Appnima.User.update(parameters).then (error, result) =>
         if error
           @bubble "error", error
         else
-          @bubble "submit", appnima
+          @bubble "change", result
         __.Modal.Loading.hide()
     false
+
+  onLogout: (event, atom) ->
+    Appnima.User.logout().then (error, result) => @bubble "logout", result
