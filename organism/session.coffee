@@ -51,12 +51,12 @@ class Atoms.Organism.AppnimaSession extends Atoms.Organism.Section
       action = button.attributes.action
       values = @form.value()
 
-      __.Modal.Loading.show()
+      __.Dialog.Loading.show()
       window.Appnima.User[action](values.mail, values.password).then (error, appnima) =>
         if error
           @bubble "error", error
         else
           @bubble action, appnima
-        __.Modal.Loading.hide()
+        __.Dialog.Loading.hide()
     else
       alert "ERROR: Unknown App/nima key"

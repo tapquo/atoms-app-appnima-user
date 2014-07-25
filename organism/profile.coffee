@@ -90,13 +90,13 @@ class Atoms.Organism.AppnimaProfile extends Atoms.Organism.Section
     if window.Appnima?.key?
       parameters = form?.value() or {}
       parameters.avatar = @file if @file?
-      __.Modal.Loading.show()
+      __.Dialog.Loading.show()
       window.Appnima.User.update(parameters).then (error, result) =>
         if error
           @bubble "error", error
         else
           @bubble "change", result
-        __.Modal.Loading.hide()
+        __.Dialog.Loading.hide()
     false
 
   onLogout: (event, atom) ->
