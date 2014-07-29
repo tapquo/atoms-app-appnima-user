@@ -1,34 +1,25 @@
 [data-atoms=app]
   [data-organism-section=appnimasession]
-    &, *
-      text-align: center
-    &:not(.no-image)
-      padding: 5rem 1rem 0 1rem !important
-    &.no-image
-      padding: 9rem 1rem 0 1rem !important
-      > img
-        display: none
-    &.no-copyright
-      > [data-atom-heading]
-        display: none
-
-    > img
-      margin: 0 auto
+    &.no-image > [data-atom-image]
+      display: none
+    &.no-copyright > [data-atom-heading]
+      display: none
+    > [data-atom-image]
       height: SIZE = 4rem
       min-width: SIZE
-
-    > form
-      margin: 1rem 0
+    AIR = 1rem
+    > [data-molecule-form]
+      margin: 1rem
       *
         text-align: center
-
-    > [data-atom-heading]
+    > [data-atom-text]
       position: absolute
-      left: 0
-      bottom: .5rem
-      width: 100%
+      display: block
+      left: AIR
+      right: AIR
+      bottom: AIR
       font-size: .8rem
-      font-weight: normal
+      text-align: center
 
 [data-atoms=app]
   [data-organism-section=appnimaprofile]
@@ -42,7 +33,5 @@
       line-height: HEIGHT
       background-color: rgba(0,0,0,0.5)
       color: white
-
     > [data-molecule-form] > [data-atom-input][type=file]
       display: none
-

@@ -15,7 +15,7 @@ class Atoms.Organism.AppnimaSession extends Atoms.Organism.Section
   @events   : ["login", "signup", "error"]
 
   @default  :
-    style   : "padding",
+    style   : "centered",
     children: [
       "Atom.Image": {}
     ,
@@ -29,7 +29,7 @@ class Atoms.Organism.AppnimaSession extends Atoms.Organism.Section
         "Atom.Button": text: "Signup", action: "signup", style: "fluid", callbacks: ["onSubmit"]
       ]
     ,
-      "Atom.Heading": text: "© All Rights Reserved"
+      "Atom.Text": value: "© All Rights Reserved"
     ]
 
   render: ->

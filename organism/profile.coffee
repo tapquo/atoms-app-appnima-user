@@ -31,7 +31,7 @@ class Atoms.Organism.AppnimaProfile extends Atoms.Organism.Section
       ,
         "Atom.Input": id: "site", type: "text", name: "site", placeholder: "Site..."
       ,
-        "Atom.Button": text: "Update profile", style: "margin-top fluid accept"
+        "Atom.Button": text: "Update profile", style: "margin-top fluid theme"
       ,
         "Atom.Button": text: "Logout", style: "fluid", callbacks: ["onLogout"]
       ,
